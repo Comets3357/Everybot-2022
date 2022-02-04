@@ -43,7 +43,7 @@ void Controller::updateControlData(const ControllerData &controllerData, Control
         controlData.rDrive = controllerData.pRYStick;
     }
 
-    controlData.arm = controllerData.sABtn;
+    controlData.arm = controllerData.sABtnToggled;
     controlData.intakeIn = controllerData.sXBtn;
     controlData.intakeOut = controllerData.sBBtn;
 

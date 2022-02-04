@@ -1,5 +1,6 @@
 #include "subsystems/Arm.h"
 #include "RobotData.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 
 void Arm::RobotInit(){
 
@@ -8,6 +9,8 @@ void Arm::RobotInit(){
     arm.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
     arm.SetInverted(true);
+
+    armEncoder.SetPosition(0);
 }
 
 void Arm::RobotPeriodic(const RobotData &robotData, ArmData &armData){
@@ -28,12 +31,13 @@ void Arm::RobotPeriodic(const RobotData &robotData, ArmData &armData){
 
     if (armUp && armRunning)
     {
-        if (armEncoder.GetPosition() > -100)
+        if (armEncoder.GetPosition() > -15)
         {
             arm.Set(-0.1);
         } else
         {
             arm.Set(0);
+            armRunning = false;
         }
     } else if (!armUp && armRunning)
     {
@@ -43,11 +47,22 @@ void Arm::RobotPeriodic(const RobotData &robotData, ArmData &armData){
         } else
         {
             arm.Set(0);
+            armRunning = false;
         }
     } else
     {
         arm.Set(0);
     }
+    // arm.Set(robotData.controllerData.sRYStick*0.1);
+    // if (robotData.controllerData.sYBtn)
+    // {
+    //     armEncoder.SetPosition(0);
+    // }
+    frc::SmartDashboard::PutNumber("POS", armEncoder.GetPosition());
+    frc::SmartDashboard::PutBoolean("up", armUp);
+    frc::SmartDashboard::PutBoolean("run", armRunning);
+
+    
 }
 
 void Arm::DisabledInit(){
