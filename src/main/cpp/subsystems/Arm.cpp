@@ -14,44 +14,47 @@ void Arm::RobotInit(){
 }
 
 void Arm::RobotPeriodic(const RobotData &robotData, ArmData &armData){
+    if(!robotData.controlData.manualMode){
+        //deadzone NOT needed for drone controller
+        if (robotData.controlData.arm <= -0.08 || robotData.controlData.arm >= 0.08)
+        {
+            arm.Set(robotData.controlData.arm*0.1);
+        } else {
+            arm.Set(0);
+        }
 
-    //deadzone NOT needed for drone controller
-    if (robotData.controlData.arm <= -0.08 || robotData.controlData.arm >= 0.08)
-    {
-        arm.Set(robotData.controlData.arm*0.1);
+        if (robotData.controlData.arm)
+        {
+            armUp = !armUp;
+            armRunning = true;
+        }
+
+        if (armUp && armRunning)
+        {
+            if (armEncoder.GetPosition() > -15)
+            {
+                arm.Set(-0.1);
+            } else
+            {
+                arm.Set(0);
+                armRunning = false;
+            }
+        } else if (!armUp && armRunning)
+        {
+            if (armEncoder.GetPosition() < 0)
+            {
+                arm.Set(0.1);
+            } else
+            {
+                arm.Set(0);
+                armRunning = false;
+            }
+        } else
+        {
+            arm.Set(0);
+        }
     } else {
-        arm.Set(0);
-    }
-
-    if (robotData.controlData.arm)
-    {
-        armUp = !armUp;
-        armRunning = true;
-    }
-
-    if (armUp && armRunning)
-    {
-        if (armEncoder.GetPosition() > -15)
-        {
-            arm.Set(-0.1);
-        } else
-        {
-            arm.Set(0);
-            armRunning = false;
-        }
-    } else if (!armUp && armRunning)
-    {
-        if (armEncoder.GetPosition() < 0)
-        {
-            arm.Set(0.1);
-        } else
-        {
-            arm.Set(0);
-            armRunning = false;
-        }
-    } else
-    {
-        arm.Set(0);
+        arm.Set(robotData.controlData.manualArm*.2);
     }
     // arm.Set(robotData.controllerData.sRYStick*0.1);
     // if (robotData.controllerData.sYBtn)

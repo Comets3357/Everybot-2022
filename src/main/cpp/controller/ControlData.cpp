@@ -44,6 +44,7 @@ void Controller::updateControlData(const ControllerData &controllerData, Control
     }
 
     controlData.arm = controllerData.sABtnToggled;
+    controlData.manualArm = controllerData.sLYStick;
     controlData.intakeIn = controllerData.sXBtn;
     controlData.intakeOut = controllerData.sBBtn;
 

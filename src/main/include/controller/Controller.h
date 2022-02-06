@@ -24,6 +24,8 @@ struct ControlData
     bool arm;
     bool intakeIn;
     bool intakeOut;
+
+    double manualArm;
 };
 
 struct ControllerData
